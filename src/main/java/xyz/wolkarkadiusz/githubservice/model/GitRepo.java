@@ -18,6 +18,7 @@ public class GitRepo {
 
     Integer stargazers_count;
     Integer forks_count;
+    Boolean fork;
 
     public Map<String, Object> toMap(List<String> fields) throws ExtractFieldsException {
         var map = new HashMap<String, Object>();

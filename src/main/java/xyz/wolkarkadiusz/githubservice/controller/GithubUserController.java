@@ -25,15 +25,15 @@ public class GithubUserController {
 
     @GetMapping("/{username}/repos")
     public ResponseEntity<?> getRepos(@PathVariable("username") String username,
-                                      @RequestParam(value = "fields", required = false) List<String> fields,
-                                      @RequestParam(value = "per_page", required = false) Integer per_page,
-                                      @RequestParam(value = "page", required = false) Integer page){
-        if(fields == null)
-            fields = new ArrayList<>();
-
+                                      @RequestParam(value = "fields", required = false, defaultValue = "") List<String> fields,
+                                      @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean exclude_forks,
+                                      @RequestParam(value = "per_page", required = false, defaultValue = "50") Integer per_page,
+                                      @RequestParam(value = "page", required = false, defaultValue = "1") Integer page){
         try{
             var repos = new ArrayList<>();
             for(GitRepo repo : githubUserService.getRepos(username, per_page, page)){
+                if(exclude_forks && repo.getFork())
+                    continue;
                 repos.add(repo.toMap(fields));
             }
             return ResponseEntity.ok(repos);

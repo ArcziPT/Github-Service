@@ -23,13 +23,9 @@ public class GitReposRepository {
     }
 
     public List<GitRepo> findByUsername(String username, Integer per_page, Integer page){
-        var urlTemplate = UriComponentsBuilder.fromHttpUrl(baseUrl + "/users/" + username + "/repos");
-
-        if(per_page != null)
-            urlTemplate.queryParam("per_page", per_page);
-
-        if(page != null)
-            urlTemplate.queryParam("page", page);
+        var urlTemplate = UriComponentsBuilder.fromHttpUrl(baseUrl + "/users/" + username + "/repos")
+                .queryParam("per_page", per_page)
+                .queryParam("page", page);
 
         var response = restTemplate.getForEntity(urlTemplate.encode().toUriString(), GitRepo[].class);
         if(response.hasBody() && response.getBody() != null)
