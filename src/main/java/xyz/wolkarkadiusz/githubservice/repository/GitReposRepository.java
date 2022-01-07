@@ -16,7 +16,7 @@ public class GitReposRepository {
 
     @Autowired
     public GitReposRepository(RestTemplate restTemplate,
-                              @Value("${github-service.url:https://api.github.com}") String baseUrl){
+                              @Value("${github-service.url}") String baseUrl){
         this.restTemplate = restTemplate;
         this.baseUrl = baseUrl;
     }
