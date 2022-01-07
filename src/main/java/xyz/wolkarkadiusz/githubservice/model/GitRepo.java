@@ -38,8 +38,7 @@ public class GitRepo {
                 map.put(field, classField.get(this));
             }
         }catch (NoSuchFieldException | IllegalAccessException e){
-            e.printStackTrace();
-            throw new ExtractFieldsException("");
+            throw new ExtractFieldsException("Object does not contain \"" + e.getMessage() + "\" field.");
         }
         return map;
     }

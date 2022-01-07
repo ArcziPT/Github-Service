@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import xyz.wolkarkadiusz.githubservice.dto.ErrorResponse;
 import xyz.wolkarkadiusz.githubservice.exception.ExtractFieldsException;
+import xyz.wolkarkadiusz.githubservice.exception.GithubException;
 import xyz.wolkarkadiusz.githubservice.model.GitRepo;
 import xyz.wolkarkadiusz.githubservice.service.GithubUserService;
 
@@ -26,29 +27,36 @@ public class GithubUserController {
     @GetMapping("/{username}/repos")
     public ResponseEntity<?> getRepos(@PathVariable("username") String username,
                                       @RequestParam(value = "fields", required = false, defaultValue = "") List<String> fields,
-                                      @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean exclude_forks,
-                                      @RequestParam(value = "per_page", required = false, defaultValue = "50") Integer per_page,
+                                      @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean excludeForks,
+                                      @RequestParam(value = "per_page", required = false, defaultValue = "50") Integer perPage,
                                       @RequestParam(value = "page", required = false, defaultValue = "1") Integer page){
         try{
             var repos = new ArrayList<>();
-            for(GitRepo repo : githubUserService.getRepos(username, per_page, page)){
-                if(exclude_forks && repo.getFork())
-                    continue;
+            for(GitRepo repo : githubUserService.getRepos(username, excludeForks, perPage, page)){
                 repos.add(repo.toMap(fields));
             }
             return ResponseEntity.ok(repos);
-        }catch (ExtractFieldsException e){
-            return ResponseEntity.badRequest().body(new ErrorResponse("No such fields present in object."));
+        }catch (ExtractFieldsException | GithubException e){
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
     }
 
     @GetMapping("/{username}/stars")
-    public Integer getStars(@PathVariable("username") String username){
-        return githubUserService.getStarsCount(username);
+    public ResponseEntity<?> getStars(@PathVariable("username") String username){
+        try {
+            return ResponseEntity.ok(githubUserService.getStarsCount(username));
+        }catch (GithubException e){
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
     }
 
     @GetMapping("/{username}/languages")
-    public Map<String, Integer> getLanguages(@PathVariable("username") String username){
-        return githubUserService.getLanguages(username);
+    public ResponseEntity<?> getLanguages(@PathVariable("username") String username,
+                                             @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean excludeForks){
+        try {
+            return ResponseEntity.ok(githubUserService.getLanguages(username, excludeForks));
+        }catch (GithubException e){
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
     }
 }
