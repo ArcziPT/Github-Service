@@ -1,7 +1,7 @@
 package xyz.wolkarkadiusz.githubservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
+import lombok.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
