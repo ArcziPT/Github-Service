@@ -18,16 +18,16 @@ public class GithubUserService {
         this.gitReposRepository = gitReposRepository;
     }
 
-    public List<GitRepo> getRepos(String username){
-        return gitReposRepository.findByUsername(username);
+    public List<GitRepo> getRepos(String username, Integer per_page, Integer page){
+        return gitReposRepository.findByUsername(username, per_page, page);
     }
 
     public Integer getStarsCount(String username){
-        return gitReposRepository.findByUsername(username).stream().reduce(0, (sum, gitRepo) -> sum + gitRepo.getStargazers_count(), Integer::sum);
+        return gitReposRepository.getAllRepos(username).stream().reduce(0, (sum, gitRepo) -> sum + gitRepo.getStargazers_count(), Integer::sum);
     }
 
     public Map<String, Integer> getLanguages(String username){
-        var repoNamesStream = getRepos(username).stream().map(GitRepo::getName);
+        var repoNamesStream = gitReposRepository.getAllRepos(username).stream().map(GitRepo::getName);
         var languagesStream = repoNamesStream.map(repoName -> gitReposRepository.getRepoLanguages(username, repoName));
 
         return languagesStream.reduce(new HashMap<String, Integer>(), ((sumMap, languagesMap) -> {

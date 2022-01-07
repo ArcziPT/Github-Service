@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import xyz.wolkarkadiusz.githubservice.model.GitRepo;
 
 import java.util.*;
@@ -21,12 +22,37 @@ public class GitReposRepository {
         this.baseUrl = baseUrl;
     }
 
-    public List<GitRepo> findByUsername(String username){
-        var response = restTemplate.getForEntity(baseUrl + "/users/" + username + "/repos", GitRepo[].class);
+    public List<GitRepo> findByUsername(String username, Integer per_page, Integer page){
+        var urlTemplate = UriComponentsBuilder.fromHttpUrl(baseUrl + "/users/" + username + "/repos");
+
+        if(per_page != null)
+            urlTemplate.queryParam("per_page", per_page);
+
+        if(page != null)
+            urlTemplate.queryParam("page", page);
+
+        var response = restTemplate.getForEntity(urlTemplate.encode().toUriString(), GitRepo[].class);
         if(response.hasBody() && response.getBody() != null)
             return new ArrayList<GitRepo>(Arrays.asList(response.getBody()));
 
         return new ArrayList<>();
+    }
+
+    public List<GitRepo> getAllRepos(String username){
+        var repos = new ArrayList<GitRepo>();
+
+        final int per_page = 50;
+        int page = 1;
+        while(true){
+            var newRepos = findByUsername(username, per_page, page);
+            repos.addAll(newRepos);
+            page++;
+
+            if(newRepos.size() < per_page)
+                break;
+        }
+
+        return repos;
     }
 
     public Map<String, Integer> getRepoLanguages(String username, String repo){
