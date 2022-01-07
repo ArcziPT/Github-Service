@@ -11,5 +11,5 @@ public class GitRepo {
     String description;
 
     Integer stargazers_count;
-    Integer forks_counts;
+    Integer forks_count;
 }
