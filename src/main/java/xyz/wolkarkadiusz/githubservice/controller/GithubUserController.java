@@ -1,5 +1,6 @@
 package xyz.wolkarkadiusz.githubservice.controller;
 
+import com.fasterxml.jackson.core.util.InternCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +11,7 @@ import xyz.wolkarkadiusz.githubservice.exception.GithubException;
 import xyz.wolkarkadiusz.githubservice.model.GitRepo;
 import xyz.wolkarkadiusz.githubservice.service.GithubUserService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -72,17 +71,26 @@ public class GithubUserController {
     }
 
     /**
-     * Returns every language used in any repository with number of bytes.
+     * Returns every language used in any repository with number of bytes sorted desc.
      * @param username - user
      * @param excludeForks - ignore forked repositories
-     * @return language frequency map
+     * @param count - number of results to return
+     * @return language frequency map sorted desc
      */
     @GetMapping("/{username}/languages")
     public ResponseEntity<?> getLanguages(@PathVariable("username") String username,
-                                             @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean excludeForks){
+                                          @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean excludeForks,
+                                          @RequestParam(value = "count", required = false, defaultValue = "1") Integer count){
         log.debug("GET /" + username + "/languages");
+        if(count <= 0)
+            return ResponseEntity.badRequest().body(new ErrorResponse("Count must be greater than 0"));
+
         try {
-            return ResponseEntity.ok(githubUserService.getLanguages(username, excludeForks));
+            var languages = githubUserService.getLanguages(username, excludeForks);
+            List<Map.Entry<String, Integer>> result  = languages.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toList());
+            Collections.reverse(result);
+            count = Math.min(result.size(), count);
+            return ResponseEntity.ok(result.subList(0, count));
         }catch (GithubException e){
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }

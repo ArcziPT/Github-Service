@@ -42,8 +42,9 @@ Aplikacja obsługuje trzy różne zapytania:
     * Zwraca sumę gwiazdek we wszystkich repozytoriach
     * Flaga exclude_forks nie jest obsługiwana, ponieważ liczba gwiazdek w frokowanym repozytorium jest niezależna od oryginalnego
 * GET /users/{username}/languages
-    * Zwraca nazwy języków programowania wraz z liczbą bajtów kodu we wszystkich repozytoriach
+    * Zwraca nazwy języków programowania wraz z liczbą bajtów kodu we wszystkich repozytoriach posortowaną malejąco
     * exclude_forks - czy forkowane repozytoria mają być ignorowane
+    * count - liczba wyników
     
 Rozwiązanie korzysta tylko z dwóch różnych zapytań udostępnionych w ramach API Github'a:
 * /users/{username}/repos
