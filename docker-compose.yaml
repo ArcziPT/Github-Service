@@ -8,6 +8,7 @@ services:
       REDIS_PORT: 6379
     env_file:
       - redis.env
+      - github.env
     depends_on:
       - redis
 

@@ -1,5 +1,6 @@
 package xyz.wolkarkadiusz.githubservice.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class GithubUserController {
@@ -30,6 +32,7 @@ public class GithubUserController {
                                       @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean excludeForks,
                                       @RequestParam(value = "per_page", required = false, defaultValue = "50") Integer perPage,
                                       @RequestParam(value = "page", required = false, defaultValue = "1") Integer page){
+        log.debug("GET /" + username + "/repos");
         try{
             var repos = new ArrayList<>();
             for(GitRepo repo : githubUserService.getRepos(username, excludeForks, perPage, page)){
@@ -43,6 +46,7 @@ public class GithubUserController {
 
     @GetMapping("/{username}/stars")
     public ResponseEntity<?> getStars(@PathVariable("username") String username){
+        log.debug("GET /" + username + "/stars");
         try {
             return ResponseEntity.ok(githubUserService.getStarsCount(username));
         }catch (GithubException e){
@@ -53,6 +57,7 @@ public class GithubUserController {
     @GetMapping("/{username}/languages")
     public ResponseEntity<?> getLanguages(@PathVariable("username") String username,
                                              @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean excludeForks){
+        log.debug("GET /" + username + "/languages");
         try {
             return ResponseEntity.ok(githubUserService.getLanguages(username, excludeForks));
         }catch (GithubException e){
