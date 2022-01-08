@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import xyz.wolkarkadiusz.githubservice.exception.ExtractFieldsException;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class GitRepo {
+public class GitRepo implements Serializable {
     String name;
     String html_url;
     String description;

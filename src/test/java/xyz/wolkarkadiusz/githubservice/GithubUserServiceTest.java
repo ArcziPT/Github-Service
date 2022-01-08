@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {GitReposRepository.class, GithubUserService.class})
+@ContextConfiguration(classes = {GitReposRepository.class, GithubUserService.class, RedisTestConfig.class})
 public class GithubUserServiceTest {
     @MockBean
     private GitReposRepository gitReposRepository;
