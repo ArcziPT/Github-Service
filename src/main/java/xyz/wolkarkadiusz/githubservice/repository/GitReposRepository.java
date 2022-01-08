@@ -3,6 +3,7 @@ package xyz.wolkarkadiusz.githubservice.repository;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,7 @@ public class GitReposRepository {
         this.baseUrl = baseUrl;
     }
 
+    @Cacheable("userReposCache")
     public List<GitRepo> findByUsername(String username, Integer per_page, Integer page) throws GithubException {
         var urlTemplate = UriComponentsBuilder.fromHttpUrl(baseUrl + "/users/" + username + "/repos")
                 .queryParam("per_page", per_page)
@@ -57,6 +59,7 @@ public class GitReposRepository {
         return repos;
     }
 
+    @Cacheable("repoLanguagesCache")
     public Map<String, Integer> getRepoLanguages(String username, String repo) throws GithubException {
         try{
             var response = restTemplate.getForEntity(baseUrl + "/repos/" + username + "/" + repo + "/languages", JsonNode.class);

@@ -1,0 +1,11 @@
+services:
+  github-service:
+    image: arczipt/github-service:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6397
+
+  redis:
+    image: redis
