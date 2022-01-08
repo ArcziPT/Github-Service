@@ -7,6 +7,9 @@ import xyz.wolkarkadiusz.githubservice.model.GitRepo;
 
 import java.util.*;
 
+/**
+ * Wrapper for caching repository.
+ */
 @Repository
 public class GitReposRepository {
     private final GitReposCacheableRepository gitReposCacheableRepository;

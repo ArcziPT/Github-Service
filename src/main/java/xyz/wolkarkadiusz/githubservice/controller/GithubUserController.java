@@ -26,6 +26,18 @@ public class GithubUserController {
         this.githubUserService = githubUserService;
     }
 
+    /**
+     * Returns list of repositories for specified user with (optional) additional fields.
+     * Always includes fields:
+     *  - name
+     *  - stars
+     * @param username - username
+     * @param fields - additional fields to include (GitRepo: html_url, forks_count, fork, description)
+     * @param excludeForks - ignore forked repositories
+     * @param perPage - how many repositories to return
+     * @param page - which page
+     * @return list of repositories
+     */
     @GetMapping("/{username}/repos")
     public ResponseEntity<?> getRepos(@PathVariable("username") String username,
                                       @RequestParam(value = "fields", required = false, defaultValue = "") List<String> fields,
@@ -44,6 +56,11 @@ public class GithubUserController {
         }
     }
 
+    /**
+     * Returns sum of stars in all repositories for specified user.
+     * @param username - user
+     * @return sum of stars
+     */
     @GetMapping("/{username}/stars")
     public ResponseEntity<?> getStars(@PathVariable("username") String username){
         log.debug("GET /" + username + "/stars");
@@ -54,6 +71,12 @@ public class GithubUserController {
         }
     }
 
+    /**
+     * Returns every language used in any repository with number of bytes.
+     * @param username - user
+     * @param excludeForks - ignore forked repositories
+     * @return language frequency map
+     */
     @GetMapping("/{username}/languages")
     public ResponseEntity<?> getLanguages(@PathVariable("username") String username,
                                              @RequestParam(value = "exclude_forks", required = false, defaultValue = "false") Boolean excludeForks){

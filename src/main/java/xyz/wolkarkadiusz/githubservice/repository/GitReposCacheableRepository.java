@@ -15,6 +15,9 @@ import xyz.wolkarkadiusz.githubservice.model.GitRepo;
 
 import java.util.*;
 
+/**
+ * Repository, which uses Redis to cache GithubAPI responses.
+ */
 @Repository
 @Slf4j
 public class GitReposCacheableRepository {
