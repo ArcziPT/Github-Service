@@ -21,7 +21,7 @@ Wymagania:
 Jeżeli chcemy zwiększyć ilość możliwych do wykonania zapytań, należy uzyskać token do API Github'a i umieścić go w pliku `github.env`:
 ```shell script
 #!/bin/bash
-export GITHUB_TOKEN="<token>"
+GITHUB_TOKEN="<token>"
 ```
 
 Kompilacja i uruchomienie:
